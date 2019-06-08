@@ -70,6 +70,26 @@ void ann_train(ann_t const *ann, double const *inputs, double const *targets, do
   /* Run forward pass. */
   ann_predict(ann, inputs);
 
+  // compute gradients of output layer
+  for (int j = 0; j < ann->output_layer->num_outputs; j++) {
+      double outputj = ann->output_layer->outputs[j];
+      ann->output_layer->deltas[j] = sigmoidprime(outputj) * (targets[j] - outputj);
+  }
+
+  // compute deltas of hidden layers
+  layer_t *layer = ann->output_layer->prev;
+  while (layer != ann->input_layer) {
+      layer_compute_deltas(layer);
+      layer = layer->prev;
+  }
+
+  // update weights of all layers except input
+  layer = layer->next;
+  while (layer) {
+      layer_update(layer, l_rate);
+      layer = layer->next;
+  }
+
   /**** PART 2 - QUESTION 4 ****/
 
   /* 3 MARKS */
