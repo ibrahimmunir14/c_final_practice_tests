@@ -4,7 +4,24 @@
 ann_t *ann_create(int num_layers, int *layer_outputs)
 {
   /**** PART 2 - QUESTION 1 ****/
-  return NULL; // delete after implementing
+  assert(num_layers >= 2);
+  assert(layer_outputs);
+  ann_t *ann = (ann_t *) malloc(sizeof(ann_t));
+  if (!ann) return NULL;
+
+  ann->input_layer = layer_create();
+  if (layer_init(ann->input_layer, layer_outputs[0], NULL)) return NULL;
+
+  layer_t *prev = ann->input_layer;
+  for (int i = 1; i < num_layers; i++) {
+      layer_t *layer = layer_create();
+      if (layer_init(layer, layer_outputs[i], prev)) return NULL;
+      prev->next = layer;
+      layer->prev = prev;
+      prev = layer;
+  }
+  ann->output_layer = prev;
+  return ann;
   /* 4 MARKS */
 }
 
@@ -12,7 +29,14 @@ ann_t *ann_create(int num_layers, int *layer_outputs)
 void ann_free(ann_t *ann)
 {
   /**** PART 2 - QUESTION 2 ****/
-
+  if (!ann) return;
+  layer_t *layer = ann->input_layer;
+  while (layer) {
+      layer_t *next = layer->next;
+      layer_free(layer);
+      layer = next;
+  }
+  free(ann);
   /* 2 MARKS */
 }
 
@@ -20,7 +44,17 @@ void ann_free(ann_t *ann)
 void ann_predict(ann_t const *ann, double const *inputs)
 {
   /**** PART 2 - QUESTION 3 ****/
-
+  assert(ann);
+  assert(ann->input_layer);
+  assert(ann->input_layer->outputs);
+  for (int i = 0; i < ann->input_layer->num_outputs; i++) {
+      ann->input_layer->outputs[i] = inputs[i];
+  }
+  layer_t *layer = ann->input_layer->next;
+  while (layer) {
+      layer_compute_outputs(layer);
+      layer = layer->next;
+  }
   /* 2 MARKS */
 }
 
