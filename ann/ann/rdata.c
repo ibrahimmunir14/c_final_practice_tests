@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
 
   /* Initialise with random numbers. */
   for(int i = 0; i < input_rows; ++i) {
-    inputs[i] = calloc(input_cols, sizeof(double));
+    inputs[i] = calloc(input_cols, sizeof(double)); // LEAKFIX: leak occurs here
     for(int j = 0; j < input_cols; ++j) {
       inputs[i][j] = (((double)rand())/RAND_MAX);
     }
@@ -44,6 +44,10 @@ int main(int argc, char *argv[])
   }
 
   /* Free up resources. */
+  // LEAKFIX: we must remember to free the memory allocated for the entries for each row of inputs
+  for (int i = 0; i < input_rows; i++) {
+      free(inputs[i]);
+  }
   free(targets);
   free(inputs);
 
