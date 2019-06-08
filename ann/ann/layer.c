@@ -27,6 +27,7 @@ layer_t *layer_create()
   newLayer->weights = NULL;
   newLayer->biases = NULL;
   newLayer->deltas = NULL;
+  return newLayer;
   /* 2 MARKS */
 }
 
@@ -45,10 +46,10 @@ bool layer_init(layer_t *layer, int num_outputs, layer_t *prev)
       if (!layer->biases) return true;
       layer->deltas = (double *) calloc(layer->num_outputs, sizeof(double));
       if (!layer->deltas) return true;
-      layer->weights = (double **) calloc(layer->num_outputs, sizeof(double *));
+      layer->weights = (double **) calloc(layer->num_inputs, sizeof(double *));
       if (!layer->weights) return true;
       for (int i = 0; i < layer->num_inputs; i++) {
-          layer->weights[i] = (double *) malloc(layer->num_outputs * sizeof(double));
+          layer->weights[i] = (double *) calloc(layer->num_outputs, sizeof(double));
           if (!layer->weights[i]) return true;
           for (int j = 0; j < layer->num_outputs; j++) {
               layer->weights[i][j] = ANN_RANDOM();
@@ -64,8 +65,6 @@ void layer_free(layer_t *layer)
 {
   /**** PART 1 - QUESTION 4 ****/
   free(layer->outputs);
-  free(layer->prev);
-  free(layer->next);
   free(layer->biases);
   free(layer->deltas);
   for (int i = 0; i < layer->num_inputs; i++) {
