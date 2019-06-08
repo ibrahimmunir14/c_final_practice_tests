@@ -83,7 +83,6 @@ void layer_compute_outputs(layer_t const *layer)
   /**** PART 1 - QUESTION 5 ****/
   /* objective: compute layer->outputs */
   assert(layer);
-  assert(layer->outputs);
   for (int j = 0; j < layer->num_outputs; j++) {
       double weightedSum = 0.0;
       for (int i = 0; i < layer->num_inputs; i++) {
@@ -99,7 +98,14 @@ void layer_compute_deltas(layer_t const *layer)
 {
   /**** PART 1 - QUESTION 6 ****/
   /* objective: compute layer->deltas */
-
+  assert(layer);
+  for (int i = 0; i < layer->num_outputs; i++) {
+      double weightedSum = 0.0;
+      for (int j = 0; j < layer->next->num_outputs; j++) {
+          weightedSum += layer->weights[i][j] * layer->next->deltas[j];
+      }
+      layer->deltas[i] = sigmoidprime(layer->outputs[i]) * weightedSum;
+  }
   /* 2 MARKS */
 }
 
@@ -108,6 +114,12 @@ void layer_update(layer_t const *layer, double l_rate)
 {
   /**** PART 1 - QUESTION 7 ****/
   /* objective: update layer->weights and layer->biases */
-
+  assert(layer);
+  for (int j = 0; j < layer->num_outputs; j++) {
+      for (int i = 0; i < layer->num_inputs; i++) {
+          layer->weights[i][j] = layer->weights[i][j] + (l_rate * layer->prev->outputs[i] * layer->deltas[j]);
+      }
+      layer->biases[j] = layer->biases[j] + (l_rate * layer->deltas[j]);
+  }
   /* 1 MARK */
 }
