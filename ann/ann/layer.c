@@ -35,6 +35,7 @@ layer_t *layer_create()
 bool layer_init(layer_t *layer, int num_outputs, layer_t *prev)
 {
   /**** PART 1 - QUESTION 3 ****/
+  assert(layer);
   layer->num_outputs = num_outputs;
   layer->outputs = (double *) calloc(num_outputs, sizeof(double));
   if (!layer->outputs) return true;
@@ -64,6 +65,7 @@ bool layer_init(layer_t *layer, int num_outputs, layer_t *prev)
 void layer_free(layer_t *layer)
 {
   /**** PART 1 - QUESTION 4 ****/
+  if (!layer) return;
   free(layer->outputs);
   free(layer->biases);
   free(layer->deltas);
@@ -80,6 +82,8 @@ void layer_compute_outputs(layer_t const *layer)
 {
   /**** PART 1 - QUESTION 5 ****/
   /* objective: compute layer->outputs */
+  assert(layer);
+  assert(layer->outputs);
   for (int j = 0; j < layer->num_outputs; j++) {
       double weightedSum = 0.0;
       for (int i = 0; i < layer->num_inputs; i++) {
