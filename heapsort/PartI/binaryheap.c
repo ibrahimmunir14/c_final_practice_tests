@@ -77,14 +77,12 @@ int right_child(int index)
 void swap(node_heap *node1, node_heap *node2)
 {
     assert(node1 && node2);
-    node_heap *temp = allocate_node_heap();
-    temp->position = node1->position;
-    temp->key = node1->key;
+    int tempPos = node1->position;
+    char* tempKey = node1->key;
     node1->position = node2->position;
     node1->key = node2->key;
-    node2->position = temp->position;
-    node2->key = temp->key;
-    free_node(temp);
+    node2->position = tempPos;
+    node2->key = tempKey;
 }
 
 /*Moves down the value of the heap[current] so the subtree rooted at index "current" satisfies with the max-heap property*/ 
@@ -147,7 +145,7 @@ void free_heap(node_heap **heap, int length)
 {
     if (heap) {
         for (int i = 1; i <= length; i++) {
-            if (heap[i]) free(heap[i]);
+            free(heap[i]);
         }
         free(heap);
     }
