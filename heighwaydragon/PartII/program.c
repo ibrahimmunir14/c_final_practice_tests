@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-void CopyUniqueLettersPtr(char *, const char *, int );
-int *printIntPtr(int *, long );
+void CopyUniqueLettersPtr(char **, const char *, int );
+int *printIntPtr(long );
 int contains(const char *, char );
 
 int main(void)
@@ -14,12 +14,14 @@ int main(void)
 
   printf("The contents of buffer is: %s\n", buffer);
 
-  CopyUniqueLettersPtr(cpybuffer, buffer, sizeof(buffer));
+  CopyUniqueLettersPtr(&cpybuffer, buffer, sizeof(buffer));
 
-  intbuffer = (int *) printIntPtr(intbuffer, sizeof(buffer));
+  intbuffer = (int *) printIntPtr(sizeof(buffer));
 
   printf("The unique letters are %s and the integer in array position 5 is: %i\n", cpybuffer, intbuffer[5]);
 
+  free(cpybuffer);
+  free(intbuffer);
   return EXIT_SUCCESS;
 }
 
@@ -40,7 +42,7 @@ int contains(const char *s, const char c)
 
 //Copy unique number of characters from a string
 
-void CopyUniqueLettersPtr(char *dst, const char *src, int number_letters)
+void CopyUniqueLettersPtr(char **dst, const char *src, int number_letters)
 {
   char *temp = calloc(strlen(src) + 1, sizeof(char));
   if (temp == NULL)
@@ -49,25 +51,24 @@ void CopyUniqueLettersPtr(char *dst, const char *src, int number_letters)
     exit(EXIT_FAILURE);
   }
 
-  dst = temp;
+  char *string_end = temp;
 
   for (int i = 0; *src != '\0' && i < number_letters; ++i, ++src)
   {
     if (!contains(temp, *src))
     {
-      *dst++ =*src;
+        *string_end++ =*src;
     }
   }
 
-  dst = realloc(temp, dst - temp + 1);
-  free(temp);
+  *dst = realloc(temp, string_end - temp + 1);
 }
 
 //initialise integer array and prints each item
 
-int *printIntPtr(int *intPtr, long size)
+int *printIntPtr(long size)
 {
-  int *intptr = intPtr;
+  int *intptr = malloc(size * sizeof(int));
   if(intptr != NULL)
   {
     for (int i = 0; i < size; ++i)
