@@ -64,7 +64,8 @@ int main() {
   printf("\n");
   */
 
-  /* an impossible example - should return "no solution" */ 
+  /* an impossible example - should return "no solution" */
+  free_maze(maze, height);
   maze = load_maze("simple.txt", &height, &width);
   assert(maze);
 
@@ -72,6 +73,7 @@ int main() {
   printf("%s\n\n",find_path(maze, height, width, '>', 'U'));
 
   /* find the path from the entrance to the middle of the Hatfield House maze */
+  free_maze(maze, height);
   maze = load_maze("hatfield.txt", &height, &width);
   assert(maze);
 
@@ -93,6 +95,7 @@ int main() {
 */
 
   /* find the path from the middle to the exit of the Hatfield House maze */
+  free_maze(maze, height);
   maze = load_maze("hatfield.txt", &height, &width);
   assert(maze);
 

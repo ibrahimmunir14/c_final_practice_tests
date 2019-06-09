@@ -35,7 +35,7 @@ char **allocate_2D_array(int rows, int columns) {
         array[i] = (char *) malloc(columns * sizeof(char));
         if (!array[i]) {
             perror("malloc failed in allocate_2D_array");
-            freeMaze(array, rows);
+            free_maze(array, rows);
             exit(EXIT_FAILURE);
         }
     }
@@ -86,7 +86,7 @@ char *find_path(char **maze, int height, int width, char start, char end) {
     return NULL;
 }
 
-void freeMaze(char **maze, int rows) {
+void free_maze(char **maze, int rows) {
     if (maze) {
         for (int i = 0; i < rows; i++) {
             if (maze[i]) free(maze[i]);
