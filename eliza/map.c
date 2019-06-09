@@ -33,29 +33,22 @@ static void map_apply_elems_internal(struct map_node *node, void (*function)(voi
 struct map_node *map_insert_internal(struct map_node *node, const char *key, void *value, int *result)
 {
     if (!node) {
-        node = map_alloc_node();
-        node->key = clone(key);
-        node->value = value;
-        node->left = NULL;
-        node->right = NULL;
+        struct map_node *newNode = map_alloc_node();
+        newNode->key = clone(key);
+        newNode->value = value;
+        newNode->left = NULL;
+        newNode->right = NULL;
         *result = 1;
-        return node;
+        return newNode;
     }
-    else if (strcmp(key, node->key) == 0)
-    {
+    if (strcmp(key, node->key) == 0) {
         *result = 0;
-        return node;
-    }
-    else if (strcmp(key, node->key) < 0)
-    {
+    } else if (strcmp(key, node->key) < 0) {
         node->left = map_insert_internal(node->left, key, value, result);
-        return node;
-    }
-    else
-    {
+    } else {
         node->right = map_insert_internal(node->right, key, value, result);
-        return node;
     }
+    return node;
 }
 
 
@@ -63,12 +56,18 @@ struct map_node *map_insert_internal(struct map_node *node, const char *key, voi
 
 void map_apply_elems(struct map *m, void (*function)(void *))
 {
- /* YOU SHOULD DELETE THE CONTENTS OF THIS FUNCTION AND REPLACE IT WITH
-  * YOUR ANSWER TO PART 3, QUESTION 1.
-  */
+ assert(m);
+ assert(function);
+ map_apply_elems_internal(m->root, function);
 }
 
-
+static void map_apply_elems_internal(struct map_node *node, void (*function)(void *)) {
+    if (node) {
+        function(node->value);
+        map_apply_elems_internal(node->left, function);
+        map_apply_elems_internal(node->right, function);
+    }
+}
 /* Allocates a struct map_node */
 
 void *map_alloc_node(void)
