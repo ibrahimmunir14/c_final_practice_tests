@@ -61,9 +61,27 @@ bool find_marker(char ch, char **maze, int height, int width, int *row, int *col
     *row = *column = -1;
     return false;
 }
+
 bool valid_solution(const char *path, char **maze, int height, int width) {
-    return NULL;
+    int row, col;
+    find_marker('>', maze, height, width, &row, &col);
+    while (*path) {
+        // make a move
+        if (*path == 'N') row--;
+        if (*path == 'S') row++;
+        if (*path == 'E') col++;
+        if (*path == 'W') col--;
+        // check where we landed
+        if (row < 0 || row >= width) return false;
+        if (col < 0 || col >= height) return false;
+        if (maze[row][col] == 'X') return true;
+        if (maze[row][col] == '|') return false;
+        if (maze[row][col] == '+') return false;
+        path++;
+    }
+    return false;
 }
+
 char *find_path(char **maze, int height, int width, char start, char end) {
     return NULL;
 }
