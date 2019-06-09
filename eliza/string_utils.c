@@ -11,13 +11,13 @@
 
 char *empty_string(void)
 {
-
- /* YOU SHOULD DELETE THE CONTENTS OF THIS FUNCTION AND REPLACE IT WITH
-  * YOUR ANSWER TO PART I, QUESTION 1.
-  */
-
-  fprintf(stderr, "empty_string() unimplemented.\n");
-  exit(EXIT_FAILURE);
+ char *empty = malloc(sizeof('\0'));
+ if (!empty) {
+     perror("malloc failed in empty_string");
+     exit(EXIT_FAILURE);
+ }
+ *empty = '\0';
+ return empty;
 }
 
 
@@ -25,13 +25,13 @@ char *empty_string(void)
 
 char *clone(const char *str)
 {
-
- /* YOU SHOULD DELETE THE CONTENTS OF THIS FUNCTION AND REPLACE IT WITH
-  * YOUR ANSWER TO PART I, QUESTION 2.
-  */
-
-  fprintf(stderr, "clone() unimplemented.\n");
-  exit(EXIT_FAILURE);
+    char *cloned = malloc((1 + strlen(str)) * sizeof(char));
+    if (!cloned) {
+        perror("malloc failed in clone");
+        exit(EXIT_FAILURE);
+    }
+    strcpy(cloned, str);
+    return cloned;
 }
 
 
@@ -42,13 +42,16 @@ char *clone(const char *str)
 
 char *push_string(char *current, const char *append)
 {
-
- /* YOU SHOULD DELETE THE CONTENTS OF THIS FUNCTION AND REPLACE IT WITH
-  * YOUR ANSWER TO PART I, QUESTION 3.
-  */
-
-  fprintf(stderr, "push_string() unimplemented.\n");
-  exit(EXIT_FAILURE);
+    int currentSize = strlen(current);
+    int appendSize = strlen(append);
+    current = (char *) realloc(current, currentSize + appendSize + 1);
+    if (!current) {
+        perror("realloc failed in push_string");
+        exit(EXIT_FAILURE);
+    }
+    strncpy(&current[currentSize], append, appendSize);
+    current[currentSize + appendSize] = '\0';
+    return current;
 }
 
 
