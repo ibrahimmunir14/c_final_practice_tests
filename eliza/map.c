@@ -32,13 +32,30 @@ static void map_apply_elems_internal(struct map_node *node, void (*function)(voi
 
 struct map_node *map_insert_internal(struct map_node *node, const char *key, void *value, int *result)
 {
-
- /* YOU SHOULD DELETE THE CONTENTS OF THIS FUNCTION AND REPLACE IT WITH
-  * YOUR ANSWER TO PART 2, QUESTION 1.
-  */
-
-  fprintf(stderr, "map_insert_internal() unimplemented.\n");
-  return NULL;
+    if (!node) {
+        node = map_alloc_node();
+        node->key = clone(key);
+        node->value = value;
+        node->left = NULL;
+        node->right = NULL;
+        *result = 1;
+        return node;
+    }
+    else if (strcmp(key, node->key) == 0)
+    {
+        *result = 0;
+        return node;
+    }
+    else if (strcmp(key, node->key) < 0)
+    {
+        node->left = map_insert_internal(node->left, key, value, result);
+        return node;
+    }
+    else
+    {
+        node->right = map_insert_internal(node->right, key, value, result);
+        return node;
+    }
 }
 
 
