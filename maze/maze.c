@@ -131,7 +131,7 @@ bool find_path_helper(char **maze, int height, int width, int row, int col, char
         (*path)[path_pos] = ' ';
         maze[row][col+1] = '+'; // indicate no path exists from checked square
     }
-    maze[row][col] = NULL; // reset square to a free space
+    maze[row][col] = ' '; // reset square to a free space
     return false;
 }
 
