@@ -150,8 +150,18 @@ void free_maze(char **maze, int rows) {
 void print_maze(char **maze, int height, int width) {
     for (int row = 0; row < height; row ++) {
         for (int col = 0; col < width; col++) {
-            if (maze[row][col] == '.') printf(" ", maze[row][col]);
-            else printf("%c", maze[row][col]);
+            switch (maze[row][col]) {
+                case '.':
+                    printf(" ");
+                    break;
+                case '|':
+                case '-':
+                case '+':
+                    printf("%c", SIMPLE_PRINT ? maze[row][col] : 219);
+                    break;
+                default:
+                    printf("%c", maze[row][col]);
+            }
         }
         printf("\n");
     }

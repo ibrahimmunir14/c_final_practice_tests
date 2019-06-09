@@ -1,6 +1,8 @@
 #ifndef MAZE_H
 #define MAZE_H
 
+const bool SIMPLE_PRINT = false;
+
 char **load_maze(const char *filename, int *height, int *width);
 void get_dimensions(FILE *file, int *height, int *width);
 char **allocate_2D_array(int rows, int columns);
