@@ -83,7 +83,56 @@ bool valid_solution(const char *path, char **maze, int height, int width) {
 }
 
 char *find_path(char **maze, int height, int width, char start, char end) {
-    return NULL;
+    char *soln = calloc(height * width, sizeof(char));
+    int start_row, start_col;
+    find_marker(start, maze, height, width, &start_row, &start_col);
+    soln[0] = '0';
+    bool soln_found = find_path_helper(maze, height, width, start_row, start_col, end, &soln, 1);
+    if (soln_found) return &soln[1];
+    return "no solution";
+}
+
+// row, col indicate current position.
+// path is the path we have taken so far including current position.
+// path_pos is index of next path element
+bool find_path_helper(char **maze, int height, int width, int row, int col, char end, char** path, int path_pos) {
+    // check the square we have landed on
+    if (maze[row][col] == end) return true;
+    if (maze[row][col] == '|') return false;
+    if (maze[row][col] == '-') return false;
+    if (maze[row][col] == '+') return false;
+    // at this point, maze[row][col] is a free space
+    maze[row][col] = '+'; // indicate square has been seen to avoid looping back
+    if (row > 0 && (*path)[path_pos - 1] != 'S') { // explore North
+        (*path)[path_pos] = 'N';
+        bool path_found = find_path_helper(maze, height, width, row - 1, col, end, path, path_pos + 1);
+        if (path_found) return true;
+        (*path)[path_pos] = ' ';
+        maze[row-1][col] = '+'; // indicate no path exists from checked square
+    }
+    if (row < height - 1 && (*path)[path_pos - 1] != 'N') { // explore South
+        (*path)[path_pos] = 'S';
+        bool path_found = find_path_helper(maze, height, width, row + 1, col, end, path, path_pos + 1);
+        if (path_found) return true;
+        (*path)[path_pos] = ' ';
+        maze[row+1][col] = '+'; // indicate no path exists from checked square
+    }
+    if (col > 0 && (*path)[path_pos - 1] != 'E') { // explore West
+        (*path)[path_pos] = 'W';
+        bool path_found = find_path_helper(maze, height, width, row, col - 1, end, path, path_pos + 1);
+        if (path_found) return true;
+        (*path)[path_pos] = ' ';
+        maze[row][col-1] = '+'; // indicate no path exists from checked square
+    }
+    if (col < width - 1 && (*path)[path_pos - 1] != 'W') { // explore East
+        (*path)[path_pos] = 'E';
+        bool path_found = find_path_helper(maze, height, width, row, col + 1, end, path, path_pos + 1);
+        if (path_found) return true;
+        (*path)[path_pos] = ' ';
+        maze[row][col+1] = '+'; // indicate no path exists from checked square
+    }
+    maze[row][col] = NULL; // reset square to a free space
+    return false;
 }
 
 void free_maze(char **maze, int rows) {

@@ -8,6 +8,7 @@ void populate_2D_array(FILE *file, char **array, int rows, int columns);
 bool find_marker(char ch, char **maze, int height, int width, int *row, int *column);
 bool valid_solution(const char *path, char **maze, int height, int width);
 char *find_path(char **maze, int height, int width, char start, char end);
+bool find_path_helper(char **maze, int height, int width, int row, int col, char end, char** path, int path_pos);
 void free_maze(char **maze, int rows);
 
 #endif
