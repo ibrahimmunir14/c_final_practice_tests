@@ -11,8 +11,8 @@ char **load_maze(const char *filename, int *height, int *width) {
         exit(EXIT_FAILURE);
     }
     get_dimensions(file, height, width);
-    char **maze = allocate_2D_array(*height, *width);
-    populate_2D_array(file, maze, *height, *width);
+    char **maze = allocate_2D_array(*height, *width + 1);
+    populate_2D_array(file, maze, *height, *width + 1);
     return maze;
 }
 void get_dimensions(FILE *file, int *height, int *width) {
@@ -20,7 +20,7 @@ void get_dimensions(FILE *file, int *height, int *width) {
     *height = *width = 0;
     char chr = getc(file);
     while (chr != EOF) {
-        if (*height == 0 && chr != '\n') { (*width)++; }
+        if (*height == 0 && chr != '\0') { (*width)++; }
         if (chr == '\n') { (*height)++; }
         chr = getc(file);
     }
@@ -49,7 +49,17 @@ void populate_2D_array(FILE *file, char **array, int rows, int columns) {
 }
 
 bool find_marker(char ch, char **maze, int height, int width, int *row, int *column) {
-    return NULL;
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            if (maze[i][j] == ch) {
+                *row = i;
+                *column = j;
+                return true;
+            }
+        }
+    }
+    *row = *column = -1;
+    return false;
 }
 bool valid_solution(const char *path, char **maze, int height, int width) {
     return NULL;
