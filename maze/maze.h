@@ -10,5 +10,6 @@ bool valid_solution(const char *path, char **maze, int height, int width);
 char *find_path(char **maze, int height, int width, char start, char end);
 bool find_path_helper(char **maze, int height, int width, int row, int col, char end, char** path, int path_pos);
 void free_maze(char **maze, int rows);
+void print_maze(char **maze, int height, int width);
 
 #endif

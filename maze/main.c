@@ -17,10 +17,10 @@ int main() {
   assert(maze);
   printf(" done (height = %d, width = %d).\n\n", height, width);
   /* For bonus */
-  /*
+
   printf("Printing simple maze:\n");
   print_maze(maze,height,width);
-  */
+
   printf("\n");
 
   printf("====================== Question 1 ======================\n\n");
@@ -58,11 +58,11 @@ int main() {
   printf("%s\n\n",find_path(maze, height, width, '>', 'X'));
 
   /* For bonus */
-  /*
+
   printf("The path is shown below:\n");
   print_maze(maze, height, width);
   printf("\n");
-  */
+
 
   /* an impossible example - should return "no solution" */
   free_maze(maze, height);
@@ -78,21 +78,21 @@ int main() {
   assert(maze);
 
   /* For bonus */
-/*
+
   printf("And now the Hatfield House maze:\n");
   print_maze(maze, height, width);
   printf("\n");
-*/
+
   
   printf("A path through the maze from '>' to 'M' is:\n");
   printf("%s\n\n",find_path(maze, height, width, '>', 'M'));
 
   /* For bonus */
-/*
+
   printf("The path is shown below:\n");
   print_maze(maze, height, width);
   printf("\n");
-*/
+
 
   /* find the path from the middle to the exit of the Hatfield House maze */
   free_maze(maze, height);
@@ -103,11 +103,11 @@ int main() {
   printf("%s\n\n",find_path(maze, height, width, 'M', 'X'));
   
   /* For bonus */
-/*
+
   printf("The path is shown below:\n");
   print_maze(maze, height, width);
   printf("\n");
-*/
+
 
   printf("======================= The End ========================\n\n");
 

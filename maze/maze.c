@@ -11,8 +11,8 @@ char **load_maze(const char *filename, int *height, int *width) {
         exit(EXIT_FAILURE);
     }
     get_dimensions(file, height, width);
-    char **maze = allocate_2D_array(*height, *width + 1);
-    populate_2D_array(file, maze, *height, *width + 1);
+    char **maze = allocate_2D_array(*height, *width);
+    populate_2D_array(file, maze, *height, *width);
     return maze;
 }
 void get_dimensions(FILE *file, int *height, int *width) {
@@ -20,7 +20,7 @@ void get_dimensions(FILE *file, int *height, int *width) {
     *height = *width = 0;
     char chr = getc(file);
     while (chr != EOF) {
-        if (*height == 0 && chr != '\0') { (*width)++; }
+        if (*height == 0 && chr != '\n') { (*width)++; }
         if (chr == '\n') { (*height)++; }
         chr = getc(file);
     }
@@ -32,7 +32,7 @@ char **allocate_2D_array(int rows, int columns) {
         exit(EXIT_FAILURE);
     }
     for (int i = 0; i < rows; i++) {
-        array[i] = (char *) malloc(columns * sizeof(char));
+        array[i] = (char *) malloc((columns + 1) * sizeof(char));
         if (!array[i]) {
             perror("malloc failed in allocate_2D_array");
             free_maze(array, rows);
@@ -44,7 +44,8 @@ char **allocate_2D_array(int rows, int columns) {
 void populate_2D_array(FILE *file, char **array, int rows, int columns) {
     fseek(file, 0, SEEK_SET);
     for (int i = 0; i < rows; i++) {
-        fgets(array[i], columns, file);
+        fgets(array[i], columns + 1, file);
+        fgetc(file);
     }
 }
 
@@ -101,35 +102,37 @@ bool find_path_helper(char **maze, int height, int width, int row, int col, char
     if (maze[row][col] == '|') return false;
     if (maze[row][col] == '-') return false;
     if (maze[row][col] == '+') return false;
+    if (maze[row][col] == '#') return false;
+    if (maze[row][col] == '.') return false;
     // at this point, maze[row][col] is a free space
-    maze[row][col] = '+'; // indicate square has been seen to avoid looping back
+    maze[row][col] = '#'; // indicate square has been seen to avoid looping back
     if (row > 0 && (*path)[path_pos - 1] != 'S') { // explore North
         (*path)[path_pos] = 'N';
         bool path_found = find_path_helper(maze, height, width, row - 1, col, end, path, path_pos + 1);
         if (path_found) return true;
         (*path)[path_pos] = ' ';
-        maze[row-1][col] = '+'; // indicate no path exists from checked square
+        if (maze[row-1][col] == ' ') maze[row-1][col] = '.'; // indicate no path exists from checked square
     }
     if (row < height - 1 && (*path)[path_pos - 1] != 'N') { // explore South
         (*path)[path_pos] = 'S';
         bool path_found = find_path_helper(maze, height, width, row + 1, col, end, path, path_pos + 1);
         if (path_found) return true;
         (*path)[path_pos] = ' ';
-        maze[row+1][col] = '+'; // indicate no path exists from checked square
+        if (maze[row+1][col] == ' ') maze[row+1][col] = '.'; // indicate no path exists from checked square
     }
     if (col > 0 && (*path)[path_pos - 1] != 'E') { // explore West
         (*path)[path_pos] = 'W';
         bool path_found = find_path_helper(maze, height, width, row, col - 1, end, path, path_pos + 1);
         if (path_found) return true;
         (*path)[path_pos] = ' ';
-        maze[row][col-1] = '+'; // indicate no path exists from checked square
+        if (maze[row][col-1] == ' ') maze[row][col-1] = '.'; // indicate no path exists from checked square
     }
     if (col < width - 1 && (*path)[path_pos - 1] != 'W') { // explore East
         (*path)[path_pos] = 'E';
         bool path_found = find_path_helper(maze, height, width, row, col + 1, end, path, path_pos + 1);
         if (path_found) return true;
         (*path)[path_pos] = ' ';
-        maze[row][col+1] = '+'; // indicate no path exists from checked square
+        if (maze[row][col+1]== ' ') maze[row][col+1] = '.'; // indicate no path exists from checked square
     }
     maze[row][col] = ' '; // reset square to a free space
     return false;
@@ -142,4 +145,14 @@ void free_maze(char **maze, int rows) {
         }
     }
     free(maze);
+}
+
+void print_maze(char **maze, int height, int width) {
+    for (int row = 0; row < height; row ++) {
+        for (int col = 0; col < width; col++) {
+            if (maze[row][col] == '.') printf(" ", maze[row][col]);
+            else printf("%c", maze[row][col]);
+        }
+        printf("\n");
+    }
 }
